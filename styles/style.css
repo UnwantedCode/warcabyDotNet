@@ -140,12 +140,16 @@ body{
   transition: transform 1s;
 }
 
+.myPice{
+  transition: transform 1s;
+}
+
 .shakePice{
   animation: shakePice .3s;
 }
 
 .movePiceTopLeft{
-  animation: movePiceTopLeft 1s ease-in-out forwards;
+  animation: movePiceTopLeft 1s ease-in-out forwards!important;
 }
 
 .movePiceTopRight{
@@ -158,6 +162,22 @@ body{
 
 .movePiceBottomRight{
   animation: movePiceBottomRight 1s ease-in-out forwards;
+}
+
+.takePiceTopLeft{
+  animation: takePiceTopLeft 0.8s ease-in-out forwards;
+}
+
+.takePiceTopRight{
+  animation: takePiceTopRight 0.8s eas forwards;
+}
+
+.takePiceBottomLeft{
+  animation: takePiceBottomLeft 0.8s ease-in-out forwards, movePiceBottomRight 0.8s ease-in;
+}
+
+.takePiceBottomRight{
+  animation: takePiceBottomRight 0.8s ease-in-out forwards;
 }
 
 @keyframes shakePice {
@@ -186,3 +206,28 @@ body{
   0% { transform: translate(0, 0) }
   100% { transform: translate(100%, 100%)}
 }
+
+@keyframes takePiceTopLeft {
+  0% { transform: translate(0, 0) }
+  50% { transform: translate(-100%, -100%)}
+  100% { transform: translate(-200%, -200%)}
+}
+
+@keyframes takePiceTopRight {
+  0% { transform: translate(0, 0) }
+  50% { transform: translate(100%, -100%)}
+  100% { transform: translate(200%, -200%)}
+}
+
+@keyframes takePiceBottomLeft {
+  0% { transform: translate(0, 0) }
+  50% { transform: translate(-100%, 100%)}
+  100% { transform: translate(-200%, 200%)}
+}
+
+@keyframes takePiceBottomRight {
+  0% { transform: translate(0, 0) }
+  50% { transform: translate(100%, 100%)}
+  100% { transform: translate(200%, 200%)}
+}
+

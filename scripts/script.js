@@ -316,13 +316,15 @@ function shakePice(){
   }, 500)
 }
 
-function movePice(){
-  pice = getField(pickedPice[0], pickedPice[1])
-  pice.childNodes[0].classList.add('movePiceTopRight')
+function animateMove(){
+  pice = getField(pickedPice[0], pickedPice[1]).childNodes[0]
+  pice.classList.add('takePiceBottomLeft')
   
   // setTimeout(() => {
-  //   pice.childNodes[0].classList.remove('movePiceTopRight')
-  // }, 1000)
+  //   pice.classList.remove('movePiceTopRight')
+  //   pice.classList.remove('movePiceTopLeft')
+  // }, 1000) 
+
   hideAvailableMoves()
   hidePickedPice()
 }
@@ -336,7 +338,7 @@ function takePice(){
 function movePawn(evt){
   const startRow = evt.target.dataset.row
   const startCol = evt.target.dataset.col
-  movePice()
+  calcAnimation()
 
   console.log(`przesun pionek na pol ${startRow} x ${startCol}`)
 }
@@ -359,6 +361,58 @@ function makeFieldsUntargetable() {                     // removes eventListener
       field.removeEventListener('click', movePawn)
     })
 }
+
+function calcAnimation() {
+  const pice = [pickedPice[0], pickedPice[1]]                                       // Backend data
+
+  const moves = [[-200, -200], [200, -200], [200, 200]]                             // Backend data
+  const animationStep = Math.round(100 / (moves.length*2))                          // for calculating frame time in animation
+  let translateX = 0
+  let translateY = 0
+  let currentStep = 0
+  const animationTime = Math.round(moves.length*0.6, 2)                    // animation duration time in seconds 
+
+  let animationStyle = `@keyframes movesSequenceAnimation {${currentStep}% { transform: translate(0, 0) }`
+
+  moves.forEach( move => {            // loop for adding next animation steps
+    let i = 0 
+    while(i < 2){                     // add 2 steps for 1 move
+      translateX += move[0]/2
+      translateY += move[1]/2
+      currentStep += animationStep
+      if(currentStep > 100) currentStep = 100     // check if step time is out of scope (0; 100) due to the animationStep rounding
+      animationFrame = `${currentStep}% { transform: translate(${translateX}%, ${translateY}%) }`
+      animationStyle += animationFrame
+      i++
+    }
+  })
+
+    animationStyle += '}' // closing bracket for animation sequence
+
+  let style = ''
+    if(!document.querySelector('#gameBoard style')){
+      style = document.createElement('style')
+    } 
+    else{
+      style = document.querySelector('#gameBoard style')
+    }
+
+  style.innerHTML = 
+  `.movesSequenceAnimation { animation: movesSequenceAnimation ${animationTime}s ease-in-out forwards} ` + animationStyle
+
+  document.querySelector('#gameBoard').appendChild(style)
+
+  field = getField(pickedPice[0], pickedPice[1]).childNodes[0]
+  field.classList.add(`movesSequenceAnimation`)
+
+  setTimeout(() => {
+    document.querySelector('.movesSequenceAnimation').classList.remove('movesSequenceAnimation')
+    document.querySelector('#gameBoard style').innerHTML = ''
+    }, animationTime*1000 + 100)
+  
+  //placePices() // execute based on new pices array from backend
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {  
   if(!boardSize) boardSize = 8
