@@ -142,7 +142,6 @@ function placePices() {
   const boardRows = document.querySelectorAll('.board-row')
   boardRows.forEach( (row, rowIndex) => {
     row.childNodes.forEach( (field, fieldIndex) => {
-      const img = document.createElement('img');
       
       if(picesArray[rowIndex][fieldIndex] === 'w')
         field.childNodes[0].classList.add('field-pice__white')
@@ -150,8 +149,6 @@ function placePices() {
       else if(picesArray[rowIndex][fieldIndex] === 'b')
        field.childNodes[0].classList.add('field-pice__black')
       
-      img.classList.add('pice-img')
-      field.childNodes[0].appendChild(img)
     })
   })
 }
@@ -185,7 +182,6 @@ function showAvailableMoves(evt){
 
   const startRow = evt.currentTarget.dataset.row
   const startCol = evt.currentTarget.dataset.col
-  
   
   if(whoseMove){      // for blacks - counts and highlights fields
     let row = startRow
@@ -291,9 +287,11 @@ function pickPice(evt){
   pickedPice[0] = row
   pickedPice[1] = col
   console.log(pickedPice[0], pickedPice[1])
-  makeFieldsTargetable()
-}
 
+  makeFieldsTargetable()
+  piceShakeAdd()
+}
+  
 function nextPlayer() {
   whoseMove = !whoseMove
   hideAvailableMoves()
@@ -314,6 +312,7 @@ function shakePice(){
   setTimeout(() => {
     pice.childNodes[0].classList.remove('shakePice')
   }, 500)
+  piceShakeRemove()
 }
 
 function animateMove(){
@@ -339,7 +338,8 @@ function movePawn(evt){
   const startRow = evt.target.dataset.row
   const startCol = evt.target.dataset.col
   calcAnimation()
-
+  hideAvailableMoves()
+  hidePickedPice()
   console.log(`przesun pionek na pol ${startRow} x ${startCol}`)
 }
 
@@ -362,10 +362,55 @@ function makeFieldsUntargetable() {                     // removes eventListener
     })
 }
 
+
+function displayResult() {
+  const resultText = 'Wygrywają Białe!'
+  document.querySelector('.result-box')
+    .classList.remove('d-none')
+  document.querySelector('.result-text')
+  .innerHTML += resultText
+}
+
+function hideResult() {
+  document.querySelector('.result-box')
+    .classList.add('d-none')
+}
+
+function piceShakeAdd(){
+  const patern1 = /available-move/
+  const patern2 = /myPice/
+  // document.querySelectorAll('.field-value').forEach(field => {
+  //   if((!patern1.test(field.classList.value) && !patern2.test(field.childNodes[0].classList.value))){
+  //     field.addEventListener('click', piceOutOfFocus)
+  //   }
+  // })
+  document.querySelectorAll('.board-row').forEach( row => {
+    row.childNodes.forEach( field => {
+      if((!patern1.test(field.classList.value) && !patern2.test(field.childNodes[0].classList.value))){
+        field.addEventListener('click', piceOutOfFocus)
+      }
+    })
+  })
+}
+
+function piceShakeRemove(){
+  document.querySelectorAll('.board-row').forEach( row => {
+    row.childNodes.forEach( field => {
+        field.removeEventListener('click', piceOutOfFocus)
+    })
+  })
+}
+
+function piceOutOfFocus(){
+  shakePice()
+  hideAvailableMoves()
+  hidePickedPice()
+}
+
 function calcAnimation() {
   const pice = [pickedPice[0], pickedPice[1]]                                       // Backend data
 
-  const moves = [[-200, -200], [200, -200], [200, 200]]                             // Backend data
+  const moves = [[-200, -200], [200, -200], [200, 200], [-200, 200]]                             // Backend data
   const animationStep = Math.round(100 / (moves.length*2))                          // for calculating frame time in animation
   let translateX = 0
   let translateY = 0
@@ -404,7 +449,7 @@ function calcAnimation() {
 
   field = getField(pickedPice[0], pickedPice[1]).childNodes[0]
   field.classList.add(`movesSequenceAnimation`)
-
+  
   setTimeout(() => {
     document.querySelector('.movesSequenceAnimation').classList.remove('movesSequenceAnimation')
     document.querySelector('#gameBoard style').innerHTML = ''

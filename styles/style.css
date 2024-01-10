@@ -119,6 +119,35 @@ body{
   background-color: rgba(171, 255, 92, .6);
 }
 
+.result-box{
+  position: absolute;
+  top: 3%;
+  background-color: rgba(107, 106, 106, 1 );
+  border-radius: 25px;
+  left: 40%;
+  padding: 2%;
+  z-index: 10;
+  width: 20%;
+  border: 2px solid #fff;
+}
+
+.result-box .modal-header{
+  color: #fff;
+  flex-direction: column;
+}
+
+.result-box .result-text{
+  padding: 5% 0;
+}
+
+.result-box .btn{
+  margin: 5% auto;
+  display: block;
+}
+
+
+
+
 
 .board-field--dark .myPice{
   transition: transform 0.6s;
@@ -141,7 +170,7 @@ body{
 }
 
 .myPice{
-  transition: transform 1s;
+  transition: transform 1s, backgroud 1s;
 }
 
 .shakePice{
@@ -180,10 +209,18 @@ body{
   animation: takePiceBottomRight 0.8s ease-in-out forwards;
 }
 
+.field-value.whiteQueen{
+  background-image: url("../assets/whiteQueen.png");
+}
+
+.field-value.blackQueen{
+  background-image: url("../assets/blackQueen.png");
+}
+
 @keyframes shakePice {
   0% { transform: translate(0, 0) }
-  33% { transform: translate(3%, 0)}
-  66% { transform: translate(-3%, 0)}
+  33% { transform: translate(5%, -2%)}
+  66% { transform: translate(-5%, 2%)}
   100% { transform: translate(0, 0)}
 }
 
